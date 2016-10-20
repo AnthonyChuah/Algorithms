@@ -1,0 +1,16 @@
+#include <iostream>
+using namespace std;
+
+template <class T>
+
+void swap_values(T& var1, T& var2)
+{
+  // Address-of to ensure you're not trying to swap the exact same variable with itself.
+  if (&var1 != &var2)
+    {
+      var1 = var1 ^ var2;
+      var2 = var2 ^ var1;
+      var1 = var1 ^ var2;
+    }
+  return;
+}
