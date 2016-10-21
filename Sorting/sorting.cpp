@@ -134,3 +134,58 @@ void shellsort(int array[], int arraysize)
     }
   return;
 }
+
+// Reference code for mergesort.
+// Logic: Divide the list into n sublists, each initially containing 1 element.
+// Merge each sublist to produce new sorted sublists of double the size, until only 1 sublist remains.
+// array A[] has the items to sort; array B[] is a work array
+void BottomUpMergeSort(A[], B[], n)
+{
+  // Each 1-element run in A is already "sorted".
+  // Make successively longer sorted runs of length 2, 4, 8, 16... until whole array is sorted.
+  for (width = 1; width < n; width = 2 * width)
+    {
+      // Array A is full of runs of length width.
+      // Imagine you are in the width == 1 case: you want to make sublists of size 2.
+      // To do that, you must merge indices 0 and 1, but not do 2.
+      // Thus you iterate by 'jumping' over odd numbers, starting at 0, 2, 4...
+      for (i = 0; i < n; i = i + 2 * width)
+        {
+	  // Now merge a sublist of width n with the NEXT sublist of width n.
+	  // Merge two runs: A[i:i+width-1] and A[i+width:i+2*width-1] to B[]
+	  // or copy A[i:n-1] to B[] ( if(i+width >= n) )
+	  BottomUpMerge(A, i, min(i+width, n), min(i+2*width, n), B);
+	  // In the initial case, BottomUpMerge(A, 0, 1, 2, B).
+        }
+      // Now work array B is full of runs of length 2*width.
+      // Copy array B to array A for next iteration.
+      // A more efficient implementation would swap the roles of A and B.
+      CopyArray(B, A, n);
+      // Now array A is full of runs of length 2*width.
+    }
+}
+
+// Left run is A[iLeft :iRight-1].
+// Right run is A[iRight:iEnd-1].
+BottomUpMerge(A[], iLeft, iRight, iEnd, B[])
+{
+  i = iLeft, j = iRight;
+  // While there are elements in the left or right runs...
+  for (k = iLeft; k < iEnd; k++) {
+    // If left run head exists and is <= existing right run head.
+    if (i < iRight && (j >= iEnd || A[i] <= A[j])) {
+      B[k] = A[i];
+      i = i + 1;
+    } else {
+      B[k] = A[j];
+      j = j + 1;    
+    }
+  } 
+}
+
+// Copies the first n elements of B to the first n elements of A.
+void CopyArray(B[], A[], n)
+{
+  for(i = 0; i < n; i++)
+    A[i] = B[i];
+}
