@@ -139,7 +139,7 @@ void shellsort(int array[], int arraysize)
 // Logic: Divide the list into n sublists, each initially containing 1 element.
 // Merge each sublist to produce new sorted sublists of double the size, until only 1 sublist remains.
 // array A[] has the items to sort; array B[] is a work array
-void BottomUpMergeSort(A[], B[], n)
+void mergesort(A[], B[], n)
 {
   // Each 1-element run in A is already "sorted".
   // Make successively longer sorted runs of length 2, 4, 8, 16... until whole array is sorted.
@@ -154,20 +154,32 @@ void BottomUpMergeSort(A[], B[], n)
 	  // Now merge a sublist of width n with the NEXT sublist of width n.
 	  // Merge two runs: A[i:i+width-1] and A[i+width:i+2*width-1] to B[]
 	  // or copy A[i:n-1] to B[] ( if(i+width >= n) )
-	  BottomUpMerge(A, i, min(i+width, n), min(i+2*width, n), B);
+	  mergesort_sublists(A, i, min(i+width, n), min(i+2*width, n), B);
 	  // In the initial case, BottomUpMerge(A, 0, 1, 2, B).
+	  // Next case, BottomUpMerge(A, 2, 3, 4, B)... etc.
+	  // Once width increments, BottomUpMerge(A, 0, 2, 4, B).
         }
       // Now work array B is full of runs of length 2*width.
       // Copy array B to array A for next iteration.
       // A more efficient implementation would swap the roles of A and B.
-      CopyArray(B, A, n);
+      copy_array(B, A, n);
       // Now array A is full of runs of length 2*width.
     }
 }
 
-// Left run is A[iLeft :iRight-1].
+// Left run is A[iLeft:iRight-1].
 // Right run is A[iRight:iEnd-1].
-BottomUpMerge(A[], iLeft, iRight, iEnd, B[])
+// Given two sorted sublists: merging them requires fewer operations than two unsorted sublists.
+// To explain: imagine that I have two sublists of size 3 with values {5, 7, 7} and {2, 3, 4}:
+// Place the left iterator on index 0 (iLeft), right iterator on index 3 (iRight), and start the
+// array-populating iterator k on index 0. Compare value of a[0] to a[3]: if a[3] is lower, copy
+// a[3] value into b[0], the copy array. Then increment the populator-iterator k, and the right
+// iterator j. Now compare a[0] (a[i]) with a[4] (a[j]) and if a[4] is lower, copy the a[4] value
+// into b[1]. Repeat for b[2]. now b[0] to b[2] contain the smallest values 2 3 4. Since j iterator
+// has fully gone to the iEnd, the first conditional is always true. Now we will copy repeatedly
+// the elements of a[0] to a[2] into b[3] to b[5].
+// Imagine another more complicated case: {4, 7, 7} and {2, 3, 5}. Do the steps in your head!
+mergesort_sublists(A[], iLeft, iRight, iEnd, B[])
 {
   i = iLeft, j = iRight;
   // While there are elements in the left or right runs...
@@ -184,7 +196,7 @@ BottomUpMerge(A[], iLeft, iRight, iEnd, B[])
 }
 
 // Copies the first n elements of B to the first n elements of A.
-void CopyArray(B[], A[], n)
+void copy_array(B[], A[], n)
 {
   for(i = 0; i < n; i++)
     A[i] = B[i];
