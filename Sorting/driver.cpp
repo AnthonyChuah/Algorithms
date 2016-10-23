@@ -38,7 +38,7 @@ int main()
   for (int i = 0; i < size; i++)
     cout << array2[i] << " ";
   cout << "\n";
-
+  
   cout << "\nTesting quicksort:\n";
   int array3[10] = {4, 6, 2, 1, 7, 8, 9, 0, 3, 5};
   quicksort(array3, 0, size-1);
@@ -46,13 +46,22 @@ int main()
   for (int i = 0; i < size; i++)
     cout << array3[i] << " ";
   cout << "\n";
-
+  
   cout << "\nTesting shellsort:\n";
   int array4[10] = {4, 6, 2, 1, 7, 8, 9, 0, 3, 5};
   shellsort(array4, size);
   cout << "After shellsort, array is: ";
   for (int i = 0; i < size; i++)
     cout << array4[i] << " ";
+  cout << "\n";
+  
+  cout << "\nTesting mergesort:\n";
+  int array5[10] = {4, 6, 2, 1, 7, 8, 9, 0, 3, 5};
+  int copy[10];
+  mergesort(array5, copy, size);
+  cout << "After mergesort, array is: ";
+  for (int i = 0; i < size; i++)
+    cout << array5[i] << " ";
   cout << "\n";
   
   return 0;

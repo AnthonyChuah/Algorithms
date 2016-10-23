@@ -16,5 +16,7 @@ void selectionsort(int array[], int arraysize);
 void insertionsort(int array[], int arraysize);
 void quicksort(int array[], int leftmost, int rightmost);
 void shellsort(int array[], int arraysize);
+void mergesort(int orig[], int copy[], int size);
+void merge_subarrays(int orig[], int copy[], int left, int right, int end);
 
 #endif
