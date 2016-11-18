@@ -18,5 +18,7 @@ void quicksort(int array[], int leftmost, int rightmost);
 void shellsort(int array[], int arraysize);
 void mergesort(int orig[], int copy[], int size);
 void merge_subarrays(int orig[], int copy[], int left, int right, int end);
+void enheap(int array[], int index, int last);
+void heapsort(int array[], int size);
 
 #endif

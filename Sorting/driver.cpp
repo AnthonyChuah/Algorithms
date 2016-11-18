@@ -64,5 +64,13 @@ int main()
     cout << array5[i] << " ";
   cout << "\n";
   
+  cout << "\nTesting heapsort:\n";
+  int array6[10] = {4, 6, 2, 1, 7, 8, 9, 0, 3, 5};
+  heapsort(array6, size);
+  cout << "After heapsort, array is: ";
+  for (int i = 0; i < size; i++)
+    cout << array6[i] << " ";
+  cout << "\n";
+  
   return 0;
 }

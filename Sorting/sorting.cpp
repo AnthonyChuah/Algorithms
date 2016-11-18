@@ -172,3 +172,27 @@ void mergesort(int orig[], int copy[], int size)
 	orig[i] = copy[i];
     }
 }
+
+// Heapsort reference code translated from Java.
+void enheap(int array[], int index, int last)
+{
+  int left = index * 2;
+  int right = left + 1;
+  int here = index;
+  if (left <= last && array[left] > array[here])
+    here = left;
+  if (right <= last && array[right] > array[here])
+    here = right;
+  if (here != index)
+    {
+      swap_values(array[index], array[here]);
+      // Recursively call enheap, which actually does:
+      enheap(array, here, last);
+    }
+}
+
+void heapsort(int array[], int size)
+{
+  int last = size - 1;
+  // To be completed once understood.
+}
