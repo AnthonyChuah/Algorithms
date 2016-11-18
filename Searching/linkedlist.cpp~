@@ -1,0 +1,130 @@
+#include <cstddef>
+#include <iostream>
+#include <fstream>
+#include <climits>
+
+class Node;
+// Forward-declaration of a node.
+
+class Node
+{
+public:
+  Node(int _key, int _value, Node* _next); // Constructor.
+  int getKey() const; // Getter for key.
+  void setKey(int _key); // Setter for key.
+  int getValue() const; // Getter for value.
+  void setValue(int _value); // Setter for value.
+  Node* getNext() const; // Getter for next node.
+  void setNext(Node* _next); // Sets Node* as the next Node.
+private:
+  int key;
+  int value;
+  Node* next;
+};
+
+Node::Node(int _key, int _value, Node* _next) {
+  key = _key;
+  value = _value;
+  next = _next;
+}
+
+int Node::getKey() const { return key; }
+
+void Node::setKey(int _key) { key = _key; }
+
+int Node::getValue() const { return value; }
+
+void Node::setValue(int _value) { value = _value; }
+
+Node* Node::getNext() const { return next; }
+
+void Node::setNext(Node* _next) { next = _next; }
+
+typedef Node* NodePtr;
+
+class LinkedList
+{
+public:
+  LinkedList();
+  void insert(int _key, int _value);
+  void erase(int _key);
+  int lookup(int _key);
+  friend std::ostream& operator <<(std::ostream& outs, LinkedList object);
+private:
+  NodePtr head;
+};
+
+LinkedList::LinkedList() : head(NULL) {}
+
+void LinkedList::insert(int _key, int _value) {
+  NodePtr finder;
+  finder = head;
+  while (finder != NULL) {
+    if (finder->getKey() == _key) {
+      finder->setValue(_value);
+      return;
+    } else {
+      finder = finder->getNext();
+    }
+  } // If you have not yet returned after this, the LList does not contain the key.
+  NodePtr newhead;
+  newhead = new Node(_key, _value, NULL);
+  newhead->setNext(head);
+  head = newhead;
+}
+
+void LinkedList::erase(int _key) {
+  NodePtr erased;
+  erased = head;
+  while (erased->getNext() != NULL && erased->getNext()->getKey() != _key) {
+    erased = erased->getNext();
+  } // When this breaks, erased will either be at the tail end or at one node before the key.
+  if (erased->getNext()->getKey() == _key) {
+    delete erased->getNext(); // Deallocate the heap memory pointed to by next.
+    erased->setNext(erased->getNext()->getNext()); // Points the node before the key to the node after the key.
+  }
+}
+
+int LinkedList::lookup(int _key) {
+  NodePtr finder;
+  while (finder != NULL) {
+    if (finder->getKey() == _key) {
+      return finder->getValue();
+    }
+    finder = finder->getNext();
+  }
+  if (finder == NULL) {
+    return INT_MIN;
+  }
+}
+
+std::ostream& operator <<(std::ostream& outs, LinkedList object) {
+  NodePtr traverse;
+  traverse = object.head;
+  while (traverse != NULL) {
+    outs << traverse->getValue() << " ";
+    traverse = traverse->getNext();
+  }
+  return outs;
+}
+
+int main() {
+  LinkedList list;
+  std::cout << "Testing LinkedList with key-value lookup.\n";
+  std::cout << "Please enter a stream of integers, and use a negative number to end the input.\n";
+  int input; int key = 0;
+  while (std::cin >> input) {
+    if (input < 0) break;
+    list.insert(key, input);
+    key++;
+  }
+  std::cout << "Entered " << key << " values.\n";
+  std::cout << "Testing the print function.\n";
+  std::cout << list;
+  std::cout << "Testing insertion at key == 0, which should overwrite the value. Let's say value is 0.\n";
+  list.insert(0, 0);
+  std::cout << list;
+  std::cout << "Testing lookup of key == 5, if it exists returns value, if not returns int_min.\n";
+  std::cout << "Lookup: " << list.lookup(5) << "\n";
+  return 0;
+}

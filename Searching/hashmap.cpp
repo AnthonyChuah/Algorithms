@@ -1,0 +1,172 @@
+/*
+HashMap implementation:
+Looking up a linked list is O(N) because you have to visit node by node.
+A HashMap shortens this process drastically by separating into X linked lists, X is programmer-defined.
+When you look up your Key, the Key is hashed into a value from 0 to X (here using modulo).
+Then you use the hashed value to access the pointer that points to the linked list that stores your key-value pair that you want to retrieve.
+Similarly, when you store a key-value pair, the key is hashed to an index, then the key-value pair is inserted into the linked list at the index position.
+I tried to use templates here, but they are very fiddly.
+*/
+
+#include <iostream>
+#include <string>
+
+template<class Key, class Value>
+class HashNode {
+public:
+  HashNode(const Key& _k, const Value& _v);
+  Key getKey() const;
+  Value getValue() const;
+  void setValue(Value _v);
+  HashNode<Key, Value>* getNext() const;
+  void setNext(HashNode* _next);
+private:
+  Key key;
+  Value value;
+  HashNode* next;
+};
+
+template<class Key, class Value>
+HashNode<Key, Value>::HashNode(const Key& _k, const Value& _v) : key(_k), value(_v), next(NULL)
+{}
+
+template<class Key, class Value>
+Key HashNode<Key, Value>::getKey() const { return key; }
+
+template<class Key, class Value>
+Value HashNode<Key, Value>::getValue() const { return value; }
+
+template<class Key, class Value>
+void HashNode<Key, Value>::setValue(Value _v) { value = _v; }
+
+template<class Key, class Value>
+HashNode<Key, Value>* HashNode<Key, Value>::getNext() const { return next; }
+
+template<class Key, class Value>
+void HashNode<Key, Value>::setNext(HashNode* _next) { next = _next; }
+
+static const int TABLE_SIZE = 128;
+
+// Here you need to declare another template, because the template above was for a pair Key Value.
+// That template allows only functions that have BOTH Key and Value inputs together.
+// This template enables Key alone in a function.
+template <class Key>
+struct KeyHash {
+  unsigned long operator() (const Key& _k) const;
+};
+
+template <class Key>
+unsigned long KeyHash<Key>::operator() (const Key& _k) const {
+  return reinterpret_cast<unsigned long>(_k) % TABLE_SIZE;
+}
+
+// Again declare template for Key, Value, and Hashed Key.
+template <class Key, class Value, class F = KeyHash<Key> >
+class HashMap {
+public:
+  HashMap();
+  ~HashMap();
+  bool get(const Key& _k, Value& _v);
+  void put(const Key& _k, const Value& _v);
+  void remove(const Key& _k);
+private:
+  HashNode<Key, Value>** table;
+  F hash_function;
+};
+
+template <class Key, class Value, class F = KeyHash<Key> >
+HashMap<Key, Value, F>::HashMap() {
+  table = new HashNode<Key, Value>* [TABLE_SIZE]();
+}
+
+template <class Key, class Value, class F = KeyHash<Key> >
+HashMap<Key, Value, F>::~HashMap() {
+  for (int i = 0; i < TABLE_SIZE; i++) {
+    HashNode<Key, Value>* entry = table[i]; // Since table is HashNode**, table[i] is HashNode*.
+    while (entry != NULL) {
+      HashNode<Key, Value>* prev = entry;
+      entry = entry->getNext();
+      delete prev;
+    }
+    table[i] = NULL;
+  }
+  delete [] table; // Delete the array of HashNodePtrPtrs.
+}
+
+template <class Key, class Value, class F = KeyHash<Key> >
+bool HashMap<Key, Value, F>::get(const Key& _k, Value& _v) {
+  unsigned long hash_value = hash_function(_k);
+  // Translate the key into its hash value through the hash function.
+  HashNode<Key, Value>* entry = table[hash_value];
+  // Extract the entry using the hash value.
+  while (entry != NULL) {
+    if (entry->getKey() == _k) {
+      _v = entry->getValue();
+      return true;
+    }
+    entry = entry->getNext();
+  }
+  return false;
+}
+
+template <class Key, class Value, class F = KeyHash<Key> >
+void HashMap<Key, Value, F>::put(const Key& _k, const Value& _v) {
+  unsigned long hash_value = hash_function(_k);
+  HashNode<Key, Value>* prev = NULL;
+  HashNode<Key, Value>* entry = table[hash_value];
+  while (entry != NULL && entry->getKey() != _k) {
+    prev = entry;
+    entry = entry->getNext();
+  }
+  if (entry == NULL) {
+    // If the entry is NULL then the key was not found in this table location.
+    entry = new HashNode<Key, Value>(_k, _v);
+    if (prev == NULL) {
+      // That means that the table location is empty. You need to insert as the first bucket.
+      table[hash_value] = entry;
+    } else {
+      prev->setNext(entry); // Append to the end of the linked list buckets.
+    }
+  } else {
+    // Else the entry has found the key. Update the value.
+    entry->setValue(_v);
+  }
+}
+
+template <class Key, class Value, class F = KeyHash<Key> >
+void HashMap<Key, Value, F>::remove(const Key& _k) {
+  unsigned long hash_value = hash_function(_k);
+  HashNode<Key, Value>* prev = NULL;
+  HashNode<Key, Value>* entry = table[hash_value];
+  while (entry != NULL && entry->getKey() != _k) {
+    prev = entry;
+    entry = entry->getNext();
+  }
+  if (entry == NULL) {
+    // The key had no buckets.
+    return;
+  } else {
+    if (prev == NULL) {
+      // Remove the first bucket of the linked list.
+      table[hash_value] = entry->getNext();
+    } else {
+      prev->setNext(entry->getNext()); // Deletes by making previous node point to next node.
+    }
+    delete entry;
+  }
+}
+
+int main() {
+  HashMap<int, std::string> hm;
+  hm.put(1, "one");
+  hm.put(2, "two");
+  hm.put(3, "three");
+
+  std::string value;
+  hm.get(1, value);
+  std::cout << "Lookup key of 1 and got: " << value << "\n";
+  hm.get(2, value);
+  std::cout << "Lookup key of 2 and got: " << value << "\n";
+  hm.get(3, value);
+  std::cout << "Lookup key of 3 and got: " << value << "\n";
+}
