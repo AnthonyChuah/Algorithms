@@ -10,6 +10,10 @@ int main() {
   list.headInsert(4);
   list.headInsert(5);
   list.print();
+  list.reverse();
+  list.print();
+  list.reverse();
+  list.print();
   list.headDelete();
   list.print();
   list.deleteByData(6);
@@ -19,6 +23,8 @@ int main() {
   list.deleteByData(4);
   list.print();
   list.deleteByData(1);
+  list.print();
+  list.headDelete();
   list.print();
   return 0;
 }

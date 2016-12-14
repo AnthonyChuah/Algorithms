@@ -12,7 +12,7 @@ class List {
   void headInsert(int _data);
   void deleteByData(int _data);
   void headDelete();
-  // void reverse();
+  void reverse();
  private:
   Node* head;
 };

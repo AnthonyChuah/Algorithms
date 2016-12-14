@@ -39,7 +39,29 @@ void List::deleteByData(int _data) {
   if (i != NULL) {
     if (prev != NULL) {
       prev->next = i->next;
+    } else {
+      head = i->next;
     }
     delete i;
   }
+}
+
+void List::reverse() {
+  Node* temp1;
+  Node* temp2;
+  Node* temp3;
+  if (head == NULL) return;
+  temp1 = NULL;
+  temp2 = head;
+  temp3 = head->next;
+  while (temp3 != NULL) {
+    temp2->next = temp1;
+    temp1 = temp2;
+    temp2 = temp3;
+    temp3 = temp3->next;
+    if (temp3 == NULL) {
+      temp2->next = temp1;
+    }
+  }
+  head = temp2;
 }
