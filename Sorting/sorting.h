@@ -20,5 +20,6 @@ void mergesort(int orig[], int copy[], int size);
 void merge_subarrays(int orig[], int copy[], int left, int right, int end);
 void enheap(int array[], int index, int last);
 void heapsort(int array[], int size);
+void countingsort(int array[], int size, int max);
 
 #endif

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <vector>
 #include "sorting.h"
 using namespace std;
 
@@ -195,5 +196,24 @@ void heapsort(int array[], int size)
   while (last > 0) {
     swap_values(array[last--], array[0]);
     heapsink(array, 0, last);
+  }
+}
+
+void countingsort(int array[], int size, int max) {
+  // Array must contain values between 0 to max (not including max).
+  vector<int> counts;
+  counts.reserve(max);
+  for (int i = 0; i < max; ++i) {
+    counts.push_back(0);
+  }
+  for (int i = 0; i < size; ++i) {
+    counts[array[i]]++;
+  }
+  int index = 0;
+  for (int i = 0; i < max; ++i) {
+    int count = counts[i];
+    for (int j = 0; j < count; ++j) {
+      array[index++] = i;
+    }
   }
 }

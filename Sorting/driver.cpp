@@ -71,6 +71,14 @@ int main()
   for (int i = 0; i < size; i++)
     cout << array6[i] << " ";
   cout << "\n";
+
+  cout << "\nTesting countingsort:\n";
+  int array7[10] = {3, 0, 2, 4, 3, 2, 1, 0, 1, 4};
+  countingsort(array7, size, 5);
+  cout << "After countingsort, array is: ";
+  for (int i = 0; i < size; i++)
+    cout << array7[i] << " ";
+  cout << "\n";
   
   return 0;
 }
