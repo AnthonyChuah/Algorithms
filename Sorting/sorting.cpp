@@ -132,7 +132,6 @@ void shellsort(int array[], int arraysize)
       // Now lower the interval size and repeat.
       interval /= 2;
     }
-  return;
 }
 
 void merge_subarrays(int orig[], int copy[], int left, int right, int end)
@@ -173,26 +172,28 @@ void mergesort(int orig[], int copy[], int size)
     }
 }
 
-// Heapsort reference code translated from Java.
-void enheap(int array[], int index, int last)
-{
-  int left = index * 2;
-  int right = left + 1;
-  int here = index;
-  if (left <= last && array[left] > array[here])
-    here = left;
-  if (right <= last && array[right] > array[here])
-    here = right;
-  if (here != index)
-    {
-      swap_values(array[index], array[here]);
-      // Recursively call enheap, which actually does:
-      enheap(array, here, last);
+void heapsink(int array[], int index, int end) {
+  int childnode = (index + 1)*2 - 1;
+  while (((index + 1)*2 - 1) <= end) {
+    childnode = (index + 1)*2 - 1;
+    int rightnode = childnode + 1;
+    if (childnode < end && (array[childnode] < array[rightnode])) childnode++;
+    if (array[index] >= array[childnode]) break;
+    else {
+      swap_values(array[index], array[childnode]);
+      index = childnode;
     }
+  }
 }
 
 void heapsort(int array[], int size)
 {
   int last = size - 1;
-  // To be completed once understood.
+  for (int i = size/2; i >= 0; i--) {
+    heapsink(array, i, last);
+  } // After this, the array obeys heap property.
+  while (last > 0) {
+    swap_values(array[last--], array[0]);
+    heapsink(array, 0, last);
+  }
 }
