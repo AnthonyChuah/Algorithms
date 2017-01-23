@@ -56,6 +56,8 @@ void insertionsort(int array[], int arraysize)
 	{
 	  if (array[j] > array[j+1])
 	    swap_values(array[j], array[j+1]);
+	  else
+	    break;
 	}
     }
   return;
@@ -218,6 +220,7 @@ void countingsort(int array[], int size, int max) {
   }
 }
 
+/*
 void countingsort_string(char** to_sort, char** copy, int start, int end, int size, int index) {
   int counts[28]; int ind = start;
   for (int i = 0; i < 28; ++i) { counts[i] = 0; }
@@ -241,3 +244,4 @@ void countingsort_string(char** to_sort, char** copy, int start, int end, int si
     }
   }
 }
+*/
